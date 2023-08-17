@@ -4,7 +4,8 @@ import { Button, Contact, List } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { selectContacts, selectFilter } from 'redux/selectors';
-import { deleteContact } from 'redux/contactsSlice/contactsSlice';
+
+import { deleteContact } from 'redux/operators';
 
 export const ContactList = () => {
   const contacts = useSelector(selectContacts);
