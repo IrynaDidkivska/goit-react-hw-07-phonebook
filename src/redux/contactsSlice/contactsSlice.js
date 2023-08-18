@@ -1,9 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import { addNewContact, deleteContact, fetchContacts } from 'redux/operators';
 
 const initialState = {
-  contacts: [],
+  contacts: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
   filterValue: '',
+};
+const pending = (state, action) => {
+  state.contacts.isLoading = true;
+  state.contacts.error = '';
+};
+const rejected = (state, { payload }) => {
+  state.contacts.isLoading = false;
+  state.contacts.error = toast.error(`${payload}`);
 };
 
 export const listSlice = createSlice({
@@ -17,16 +30,39 @@ export const listSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchContacts.fulfilled, (state, { payload }) => {
-        state.contacts = payload;
+        state.contacts.items = payload;
       })
       .addCase(deleteContact.fulfilled, (state, { payload }) => {
-        state.contacts = state.contacts.filter(
+        state.contacts.items = state.contacts.items.filter(
           contact => contact.id !== payload
         );
       })
       .addCase(addNewContact.fulfilled, (state, { payload }) => {
-        state.contacts.push(payload);
-      });
+        state.contacts.items.push(payload);
+      })
+
+      .addMatcher(
+        isAnyOf(fetchContacts.pending, addNewContact.pending),
+        pending
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.fulfilled,
+          deleteContact.fulfilled,
+          addNewContact.fulfilled
+        ),
+        state => {
+          state.contacts.isLoading = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.rejected,
+          deleteContact.rejected,
+          addNewContact.rejected
+        ),
+        rejected
+      );
   },
 });
 // Екпортуємо наші екшени, щоб вони працювали в компонентах при dispatch

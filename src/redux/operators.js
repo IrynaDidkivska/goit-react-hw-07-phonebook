@@ -19,7 +19,7 @@ export const fetchContacts = createAsyncThunk(
   }
 );
 export const addNewContact = createAsyncThunk(
-  'contact/add',
+  'contact/addContact',
   async (contact, thunkAPI) => {
     try {
       const { data } = await API.post('/PhoneBook', contact);
@@ -31,7 +31,7 @@ export const addNewContact = createAsyncThunk(
 );
 
 export const deleteContact = createAsyncThunk(
-  'contact/delete',
+  'contact/deleteContact',
   async (id, thunkAPI) => {
     try {
       const { data } = await API.delete(`/PhoneBook/${id}`);
