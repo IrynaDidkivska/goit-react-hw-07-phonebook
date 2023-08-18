@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { selectContacts } from 'redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { nanoid } from '@reduxjs/toolkit';
 import { addNewContact } from 'redux/operators';
 
 export const ContactForm = () => {
@@ -30,7 +29,7 @@ export const ContactForm = () => {
       return;
     }
 
-    dispatch(addNewContact({ name, number, id: nanoid() }));
+    dispatch(addNewContact({ name, number }));
     toast.success(`Contact ${name} successfully added!`);
     setName('');
     setNumber('');
